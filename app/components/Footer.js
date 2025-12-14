@@ -34,7 +34,7 @@ function Footer() {
       </div>
 
       <p className="mt-[22px] text-center text-[16.8px] text-black/90">
-        © 2022 PrivateDelights.ch
+        © 2026 PrivateDelights.ch
       </p>
     </div>
   );

